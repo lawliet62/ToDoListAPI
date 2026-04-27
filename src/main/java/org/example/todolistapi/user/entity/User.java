@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -22,7 +24,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    public User(String name, String email, String password) {
+    public User(@NotBlank String name, @Email String email, @NotBlank String password) {
         this.name = name;
         this.email = email;
         this.password = password;
