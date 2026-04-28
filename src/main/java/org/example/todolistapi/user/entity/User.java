@@ -22,11 +22,11 @@ public class User {
     private String email;
 
     @JsonIgnore
-    private String password;
+    private String encodedPassword;
 
-    public User(@NotBlank String name, @Email String email, @NotBlank String password) {
+    public User(@NotBlank String name, @Email String email, @NotBlank String encodedPassword) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.encodedPassword = encodedPassword;
     }
 }
