@@ -1,15 +1,13 @@
 package org.example.todolistapi.todo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.todolistapi.user.entity.User;
 
 @Getter
 @Entity
@@ -25,8 +23,13 @@ public class Todo {
     @Setter
     private String description;
 
-    public Todo(@NotBlank String title, @NotNull String description) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Todo(@NotBlank String title, @NotNull String description, @NotNull User user) {
         this.title = title;
         this.description = description;
+        this.user = user;
     }
 }
