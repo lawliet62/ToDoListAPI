@@ -1,6 +1,9 @@
 package org.example.todolistapi.todo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.todolistapi.global.exception.AuthenticatedUserNotFoundException;
+import org.example.todolistapi.global.exception.ForbiddenTodoAccessException;
+import org.example.todolistapi.global.exception.TodoNotFoundException;
 import org.example.todolistapi.todo.dto.TodoListResponse;
 import org.example.todolistapi.todo.dto.TodoResponse;
 import org.example.todolistapi.todo.entity.Todo;
@@ -23,18 +26,21 @@ public class TodoService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createTodo(String title, String description, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public void createTodo(Long userId, String title, String description) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticatedUserNotFoundException("Authenticated user not found"));
 
         Todo todo = new Todo(title, description, user);
         todoRepository.save(todo);
     }
 
     @Transactional(readOnly = true)
-    public TodoListResponse getTodos(int page, int limit) {
+    public TodoListResponse getTodos(Long userId, int page, int limit) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticatedUserNotFoundException("Authenticated user not found"));
+
         Pageable pageable = PageRequest.of(page - 1, limit);
-        Page<Todo> todoPage = todoRepository.findAll(pageable);
+        Page<Todo> todoPage = todoRepository.findByUser(user, pageable);
 
         List<TodoResponse> data = todoPage.getContent().stream()
                 .map(todo -> new TodoResponse(
@@ -51,6 +57,36 @@ public class TodoService {
                 todoPage.getTotalElements()
         );
     }
+
+    @Transactional
+    public void updateTodo(Long userId, Long todoId, String title, String description) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticatedUserNotFoundException("Authenticated user not found"));
+
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new TodoNotFoundException("Todo not found"));
+
+        if (!todo.getUser().getId().equals(user.getId()))
+            throw new ForbiddenTodoAccessException("You are not allowed to update this todo");
+
+        todo.setTitle(title);
+        todo.setDescription(description);
+    }
+
+    @Transactional
+    public void deleteTodo(Long userId, Long todoId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AuthenticatedUserNotFoundException("Authenticated user not found"));
+
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new TodoNotFoundException("Todo not found"));
+
+        if (!todo.getUser().getId().equals(user.getId()))
+            throw new ForbiddenTodoAccessException("You are not allowed to delete this todo");
+
+        todoRepository.delete(todo);
+    }
+
 
 
 }
