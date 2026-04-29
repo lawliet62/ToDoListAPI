@@ -19,20 +19,22 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String email) {
+    public String generateToken(Long userId) {
         return Jwts.builder()
-                .subject(email)
+                .subject(String.valueOf(userId))
                 .signWith(getSigningKey())
                 .compact();
     }
 
-    public String getEmailFromToken(String token) {
-        return Jwts.parser()
+    public Long getUserIdFromToken(String token) {
+        return Long.valueOf(
+                Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .getSubject();
+                .getSubject()
+                );
     }
 
     public boolean isValidToken(String token) {
