@@ -48,4 +48,10 @@ public class ControllerAdvice {
                 .body(ApiResponse.failure(e.getMessage()));
     }
 
+    @ExceptionHandler(TodoNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleTodoNotFound(TodoNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure(e.getMessage()));
+    }
+
 }
