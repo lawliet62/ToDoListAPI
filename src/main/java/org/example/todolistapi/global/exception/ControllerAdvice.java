@@ -42,4 +42,10 @@ public class ControllerAdvice {
                 .body(ApiResponse.failure(e.getMessage()));
     }
 
+    @ExceptionHandler(AuthenticatedUserNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAuthenticatedUserNotFound(AuthenticatedUserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.failure(e.getMessage()));
+    }
+
 }
