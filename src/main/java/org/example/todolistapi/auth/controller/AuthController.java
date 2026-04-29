@@ -30,7 +30,7 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("회원가입에 성공했습니다.", response));
+                .body(ApiResponse.success("You have successfully registered", response));
     }
 
     @PostMapping("/login")
@@ -40,7 +40,7 @@ public class AuthController {
                 request.password()
         );
 
-        return ResponseEntity.ok(ApiResponse.success("로그인에 성공했습니다.", response));
+        return ResponseEntity.ok(ApiResponse.success("You have successfully logged in", response));
     }
 
 }
