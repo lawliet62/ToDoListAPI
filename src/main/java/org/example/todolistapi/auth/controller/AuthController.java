@@ -6,6 +6,7 @@ import org.example.todolistapi.auth.dto.AuthResponse;
 import org.example.todolistapi.auth.dto.LoginRequest;
 import org.example.todolistapi.auth.dto.RegistrationRequest;
 import org.example.todolistapi.auth.service.AuthService;
+import org.example.todolistapi.global.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,24 +22,25 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegistrationRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegistrationRequest request) {
         AuthResponse response = authService.registerUser(
                 request.name(),
                 request.email(),
                 request.password()
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("회원가입에 성공했습니다.", response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(
                 request.email(),
                 request.password()
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success("로그인에 성공했습니다.", response));
     }
 
 }
