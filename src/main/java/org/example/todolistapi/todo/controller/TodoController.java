@@ -18,13 +18,13 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @PostMapping("/todos")
+    @PostMapping
     public ResponseEntity<Void> createTodo(@RequestBody TodoCreateRequest request,
                                            Authentication authentication) {
         todoService.createTodo(
+                (Long) authentication.getPrincipal(),
                 request.title(),
-                request.description(),
-                authentication.getName()
+                request.description()
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
