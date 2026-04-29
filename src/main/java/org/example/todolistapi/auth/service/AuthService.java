@@ -25,9 +25,9 @@ public class AuthService {
             throw new DuplicateEmailException("Email already exists");
 
         String encodedPassword = passwordEncoder.encode(password);
-        repository.save(new User(name, email, encodedPassword));
+        User savedUser = repository.save(new User(name, email, encodedPassword));
 
-        String token = jwtTokenProvider.generateToken(email);
+        String token = jwtTokenProvider.generateToken(savedUser.getId());
         return new AuthResponse(token);
     }
 
@@ -39,7 +39,7 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getEncodedPassword()))
             throw new InvalidCredentialsException("Invalid email or password");
 
-        String token = jwtTokenProvider.generateToken(user.getEmail());
+        String token = jwtTokenProvider.generateToken(user.getId());
         return new AuthResponse(token);
     }
 
