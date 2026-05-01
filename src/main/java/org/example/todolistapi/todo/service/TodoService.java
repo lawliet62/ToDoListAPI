@@ -59,7 +59,7 @@ public class TodoService {
     }
 
     @Transactional
-    public void updateTodo(Long userId, Long todoId, String title, String description) {
+    public TodoResponse updateTodo(Long userId, Long todoId, String title, String description) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AuthenticatedUserNotFoundException("Authenticated user not found"));
 
@@ -71,6 +71,8 @@ public class TodoService {
 
         todo.setTitle(title);
         todo.setDescription(description);
+
+        return new TodoResponse(todoId, title, description);
     }
 
     @Transactional
