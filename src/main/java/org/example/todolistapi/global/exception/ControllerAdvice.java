@@ -37,7 +37,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(ForbiddenTodoAccessException.class)
-    public ResponseEntity<ApiResponse<Void>> handleForbiddenUpdate(ForbiddenTodoAccessException e) {
+    public ResponseEntity<ApiResponse<Void>> handleForbiddenAccess(ForbiddenTodoAccessException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.failure(e.getMessage()));
     }
