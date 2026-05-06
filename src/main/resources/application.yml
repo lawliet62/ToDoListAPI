@@ -17,4 +17,5 @@ spring:
         format_sql: true
 
 jwt:
-  secret: "this-is-a-secret-key-this-is-a-secret-key"
+  secret: your-very-long-secret-key-for-hmac-signing
+  expiration: 3600000
