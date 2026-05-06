@@ -1,5 +1,6 @@
 package org.example.todolistapi.auth.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
@@ -35,12 +36,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Since "Bearer" is 7 characters long, the text following it is the actual JWT
         String token = authorizationHeader.substring(7);
 
-        Long userId = jwtTokenProvider.getUserIdFromToken(token);
+        try {
+            Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(userId, null, List.of());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userId, null, List.of());
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JwtException | IllegalArgumentException e) {
+            SecurityContextHolder.clearContext();
+        }
 
         filterChain.doFilter(request, response);
     }
