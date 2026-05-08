@@ -1,5 +1,6 @@
 package org.example.todolistapi.todo.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.example.todolistapi.todo.dto.TodoCreateRequest;
@@ -21,7 +22,7 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<Void> createTodo(Authentication authentication,
-                                           @RequestBody TodoCreateRequest request) {
+                                           @Valid @RequestBody TodoCreateRequest request) {
         todoService.createTodo(
                 (Long) authentication.getPrincipal(),
                 request.title(),
@@ -47,7 +48,7 @@ public class TodoController {
     @PutMapping("/{todoId}")
     public ResponseEntity<TodoResponse> updateTodo(Authentication authentication,
                                                    @PathVariable Long todoId,
-                                                   @RequestBody TodoUpdateRequest request) {
+                                                   @Valid @RequestBody TodoUpdateRequest request) {
         TodoResponse response = todoService.updateTodo(
                 (Long) authentication.getPrincipal(),
                 todoId,
