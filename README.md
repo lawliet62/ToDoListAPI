@@ -1,5 +1,7 @@
 # ToDoListAPI
 
+## Project path: https://roadmap.sh/projects/todo-list-api
+
 JWT 인증 기반의 To-Do List REST API 프로젝트입니다.
 
 ## 기술 스택
@@ -136,4 +138,3 @@ curl "http://localhost:8080/todos?page=1&limit=10" \
 - `GET /todos?page=1&limit=10`: 할 일 목록 조회
 - `PUT /todos/{todoId}`: 할 일 수정
 - `DELETE /todos/{todoId}`: 할 일 삭제
-
